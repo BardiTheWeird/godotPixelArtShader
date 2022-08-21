@@ -1,0 +1,183 @@
+[gd_scene load_steps=18 format=2]
+
+[ext_resource path="res://Rotator.tscn" type="PackedScene" id=1]
+[ext_resource path="res://LightSphere.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Rotator.gd" type="Script" id=3]
+[ext_resource path="res://PixelShader.gdshader" type="Shader" id=4]
+[ext_resource path="res://assets/palette1.png" type="Texture" id=5]
+
+[sub_resource type="ProceduralSky" id=11]
+radiance_size = 1
+sun_energy = 0.1
+
+[sub_resource type="Environment" id=10]
+background_sky = SubResource( 11 )
+ambient_light_color = Color( 1, 1, 1, 1 )
+ambient_light_energy = 0.0
+tonemap_mode = 3
+auto_exposure_enabled = true
+glow_bloom = 0.05
+
+[sub_resource type="ShaderMaterial" id=13]
+shader = ExtResource( 4 )
+shader_param/pixelSize = 4
+shader_param/col_per_channel = 6.0
+shader_param/dithering_intensity = 0.5
+shader_param/color_to_palette_blend = 0.3
+shader_param/color_palette_size = 5
+shader_param/brightness = 0.05
+shader_param/contrast = 1.0
+shader_param/saturation = 0.8
+shader_param/gamma = 1.5
+shader_param/color_palette = ExtResource( 5 )
+
+[sub_resource type="CubeMesh" id=9]
+flip_faces = true
+size = Vector3( 20, 10, 20 )
+
+[sub_resource type="SpatialMaterial" id=5]
+albedo_color = Color( 0.137255, 0.52549, 0.219608, 1 )
+
+[sub_resource type="PlaneMesh" id=1]
+material = SubResource( 5 )
+size = Vector2( 10, 10 )
+
+[sub_resource type="SpatialMaterial" id=2]
+albedo_color = Color( 0.596078, 0.333333, 0.333333, 1 )
+
+[sub_resource type="CylinderMesh" id=3]
+material = SubResource( 2 )
+
+[sub_resource type="CubeMesh" id=4]
+size = Vector3( 1, 1, 1 )
+
+[sub_resource type="SpatialMaterial" id=6]
+resource_local_to_scene = true
+flags_transparent = true
+albedo_color = Color( 0.662745, 1, 0, 0.2 )
+emission_enabled = true
+emission = Color( 0.662745, 1, 0, 1 )
+emission_energy = 1.0
+emission_operator = 0
+emission_on_uv2 = false
+
+[sub_resource type="SpatialMaterial" id=7]
+resource_local_to_scene = true
+flags_transparent = true
+albedo_color = Color( 1, 0.815686, 0, 0.2 )
+emission_enabled = true
+emission = Color( 1, 0.815686, 0, 1 )
+emission_energy = 1.0
+emission_operator = 0
+emission_on_uv2 = false
+
+[sub_resource type="SpatialMaterial" id=8]
+resource_local_to_scene = true
+flags_transparent = true
+albedo_color = Color( 0.945098, 0, 0.466667, 0.2 )
+emission_enabled = true
+emission = Color( 0.945098, 0, 0.466667, 1 )
+emission_energy = 1.0
+emission_operator = 0
+emission_on_uv2 = false
+
+[node name="Main" type="Node2D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 10 )
+
+[node name="PixelContainer" type="ViewportContainer" parent="WorldEnvironment"]
+material = SubResource( 13 )
+margin_right = 1920.0
+margin_bottom = 1080.0
+
+[node name="Viewport" type="Viewport" parent="WorldEnvironment/PixelContainer"]
+size = Vector2( 1920, 1080 )
+handle_input_locally = false
+render_target_update_mode = 3
+
+[node name="Box" type="MeshInstance" parent="WorldEnvironment/PixelContainer/Viewport"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0 )
+mesh = SubResource( 9 )
+skeleton = NodePath("../../../..")
+
+[node name="Floor" type="MeshInstance" parent="WorldEnvironment/PixelContainer/Viewport"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0 )
+mesh = SubResource( 1 )
+skeleton = NodePath("../../../..")
+
+[node name="Cylinder" type="MeshInstance" parent="WorldEnvironment/PixelContainer/Viewport"]
+mesh = SubResource( 3 )
+skeleton = NodePath("../../../..")
+
+[node name="Cube" type="MeshInstance" parent="WorldEnvironment/PixelContainer/Viewport"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
+mesh = SubResource( 4 )
+skeleton = NodePath("../../../..")
+
+[node name="Rotator" parent="WorldEnvironment/PixelContainer/Viewport/Cube" instance=ExtResource( 1 )]
+rotation_velocity = Vector3( 10, 5, 5 )
+
+[node name="CameraPivot" type="Spatial" parent="WorldEnvironment/PixelContainer/Viewport"]
+transform = Transform( 0.939693, 0.17101, -0.296198, 0, 0.866025, 0.5, 0.34202, -0.469846, 0.813798, 3.5, 0, 0 )
+
+[node name="Camera" type="Camera" parent="WorldEnvironment/PixelContainer/Viewport/CameraPivot"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6.65964 )
+
+[node name="OrbitingLights" type="Spatial" parent="WorldEnvironment/PixelContainer/Viewport"]
+
+[node name="OrbitPivotGreen" type="Spatial" parent="WorldEnvironment/PixelContainer/Viewport/OrbitingLights"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
+
+[node name="LightSphere" parent="WorldEnvironment/PixelContainer/Viewport/OrbitingLights/OrbitPivotGreen" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0 )
+light_color = Color( 0.662745, 1, 0, 1 )
+light_energy = 2.0
+omni_range = 10.0
+color = Color( 0.662745, 1, 0, 1 )
+
+[node name="Mesh" parent="WorldEnvironment/PixelContainer/Viewport/OrbitingLights/OrbitPivotGreen/LightSphere" index="0"]
+material/0 = SubResource( 6 )
+
+[node name="Rotator" type="Spatial" parent="WorldEnvironment/PixelContainer/Viewport/OrbitingLights/OrbitPivotGreen"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0 )
+script = ExtResource( 3 )
+rotation_velocity = Vector3( 0, 30, 0 )
+
+[node name="OrbitPivotOrange" type="Spatial" parent="WorldEnvironment/PixelContainer/Viewport/OrbitingLights"]
+transform = Transform( 0.852868, -0.150384, -0.5, 0.173648, 0.984808, 0, 0.492404, -0.0868241, 0.866025, 0, 1, 0 )
+
+[node name="LightSphere" parent="WorldEnvironment/PixelContainer/Viewport/OrbitingLights/OrbitPivotOrange" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 0 )
+light_energy = 2.0
+omni_range = 10.0
+
+[node name="Mesh" parent="WorldEnvironment/PixelContainer/Viewport/OrbitingLights/OrbitPivotOrange/LightSphere" index="0"]
+material/0 = SubResource( 7 )
+
+[node name="Rotator" type="Spatial" parent="WorldEnvironment/PixelContainer/Viewport/OrbitingLights/OrbitPivotOrange"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0 )
+script = ExtResource( 3 )
+rotation_velocity = Vector3( 0, 15, 0 )
+
+[node name="OrbitPivotPink" type="Spatial" parent="WorldEnvironment/PixelContainer/Viewport/OrbitingLights"]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 3, 0 )
+
+[node name="LightSphere" parent="WorldEnvironment/PixelContainer/Viewport/OrbitingLights/OrbitPivotPink" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0 )
+light_color = Color( 0.945098, 0, 0.466667, 1 )
+light_energy = 2.0
+omni_range = 10.0
+color = Color( 0.945098, 0, 0.466667, 1 )
+
+[node name="Mesh" parent="WorldEnvironment/PixelContainer/Viewport/OrbitingLights/OrbitPivotPink/LightSphere" index="0"]
+material/0 = SubResource( 8 )
+
+[node name="Rotator" type="Spatial" parent="WorldEnvironment/PixelContainer/Viewport/OrbitingLights/OrbitPivotPink"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0 )
+script = ExtResource( 3 )
+rotation_velocity = Vector3( 0, 90, 0 )
+
+[editable path="WorldEnvironment/PixelContainer/Viewport/OrbitingLights/OrbitPivotGreen/LightSphere"]
+[editable path="WorldEnvironment/PixelContainer/Viewport/OrbitingLights/OrbitPivotOrange/LightSphere"]
+[editable path="WorldEnvironment/PixelContainer/Viewport/OrbitingLights/OrbitPivotPink/LightSphere"]
