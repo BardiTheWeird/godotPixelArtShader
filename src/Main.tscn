@@ -21,14 +21,14 @@ glow_bloom = 0.05
 [sub_resource type="ShaderMaterial" id=13]
 shader = ExtResource( 4 )
 shader_param/pixelSize = 4
-shader_param/col_per_channel = 6.0
-shader_param/dithering_intensity = 0.5
-shader_param/color_to_palette_blend = 0.3
+shader_param/col_per_channel = 10.0
+shader_param/dithering_intensity = 0.2
+shader_param/color_to_palette_blend = 0.5
 shader_param/color_palette_size = 5
-shader_param/brightness = 0.05
-shader_param/contrast = 1.0
+shader_param/brightness = 0.0
+shader_param/contrast = 1.3
 shader_param/saturation = 0.8
-shader_param/gamma = 1.5
+shader_param/gamma = 2.0
 shader_param/color_palette = ExtResource( 5 )
 
 [sub_resource type="CubeMesh" id=9]
@@ -119,7 +119,7 @@ skeleton = NodePath("../../../..")
 rotation_velocity = Vector3( 10, 5, 5 )
 
 [node name="CameraPivot" type="Spatial" parent="WorldEnvironment/PixelContainer/Viewport"]
-transform = Transform( 0.939693, 0.17101, -0.296198, 0, 0.866025, 0.5, 0.34202, -0.469846, 0.813798, 3.5, 0, 0 )
+transform = Transform( 0.939693, 0.17101, -0.296198, 0, 0.866025, 0.5, 0.34202, -0.469846, 0.813798, 0, 0, 0 )
 
 [node name="Camera" type="Camera" parent="WorldEnvironment/PixelContainer/Viewport/CameraPivot"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6.65964 )
